@@ -27,7 +27,7 @@ def detectPose(frame, pose_model, display=True):
     return modified_frame, landmarks
 
 def detectFall(landmarks, height, previous_avg_shoulder_height):
-    # Extracting the y-coordinate of the shoulder (landmark indices 27 and 32)
+
     left_shoulder_y = landmarks[11][1]
     right_shoulder_y = landmarks[12][1]
     
@@ -37,13 +37,10 @@ def detectFall(landmarks, height, previous_avg_shoulder_height):
     if(previous_avg_shoulder_height==0):
         previous_avg_shoulder_height=avg_shoulder_y
         return False,previous_avg_shoulder_height
-
-    
-    # Threshold for fall detection (you can adjust this threshold as needed)
     fall_threshold = previous_avg_shoulder_height * 1.5
     print(previous_avg_shoulder_height, avg_shoulder_y,end="\n")
     
-    # Check if the average shoulder y-coordinate falls less than 30% of the previous average shoulder height
+    # Check if the average shoulder y-coordinate falls less than the previous average shoulder height
     if avg_shoulder_y > fall_threshold:
         previous_avg_shoulder_height = avg_shoulder_y
         return True, previous_avg_shoulder_height
@@ -51,17 +48,19 @@ def detectFall(landmarks, height, previous_avg_shoulder_height):
         previous_avg_shoulder_height = avg_shoulder_y
         return False, previous_avg_shoulder_height
 
-pose_video = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.5, model_complexity=2)
-video = cv2.VideoCapture(0)
+pose_video = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.7, model_complexity=2)
+video = cv2.VideoCapture('video1.mp4')
 time1 = 0
 fall_detected = False
 while video.isOpened():
     ret, frame = video.read()
+    if not ret:
+        break
     modified_frame, landmarks = detectPose(frame, pose_video, display=True)
     
 
     time2 = time()
-    if (time2 - time1) > 4:  # Check every 5 seconds
+    if (time2 - time1) > 3:  # Check every 5 seconds
         if landmarks is not None:
             height, _, _ = frame.shape
             fall_detected, previous_avg_shoulder_height = detectFall(landmarks, height, previous_avg_shoulder_height)
