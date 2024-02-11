@@ -13,6 +13,9 @@ Copy code
 ` pip install opencv-python
 pip install mediapipe ` 
 
+### Working of the Prototype
+[Working Demo with Fall Detection and Face Recognition](https://drive.google.com/file/d/1HhNCq11J1ZNmuDoxo6KYVFS1S7IJZid7/view?usp=sharing)
+
 ## How it works
 
 ### Video Capture: 
@@ -32,3 +35,4 @@ When a fall is detected, the system prints "Fall Detected" and retrieves relevan
 
 ### Integration with Healthcare Authorities and Guardians:
 The database contains comprehensive information about the individuals being monitored, securely storing their medical history and emergency contact details. Healthcare authorities and guardians receive immediate notifications via Telegram with detailed information about the incident, enabling them to initiate a timely response. Healthcare authorities coordinate assistance efforts based on the information provided, dispatching appropriate medical personnel or emergency responders to the location.
+
