@@ -57,7 +57,7 @@ def detectFall(landmarks, height, previous_avg_shoulder_height):
 frr = fr.FaceRecognition()
 frr.encode_faces()
 pose_video = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.7, model_complexity=2)
-video = cv2.VideoCapture('video3.mp4')
+video = cv2.VideoCapture(0)
 time1 = 0
 fall_detected = False
     
