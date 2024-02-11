@@ -1,4 +1,9 @@
+import facial_recognition as fr
+
+import os
 import cv2
+import numpy as np
+import math
 import mediapipe as mp
 from time import time
 
@@ -48,34 +53,35 @@ def detectFall(landmarks, height, previous_avg_shoulder_height):
         previous_avg_shoulder_height = avg_shoulder_y
         return False, previous_avg_shoulder_height
 
+
+frr = fr.FaceRecognition()
+frr.encode_faces()
 pose_video = mp.solutions.pose.Pose(static_image_mode=False, min_detection_confidence=0.7, model_complexity=2)
-video = cv2.VideoCapture('video1.mp4')
+video = cv2.VideoCapture('video3.mp4')
 time1 = 0
 fall_detected = False
+    
 while video.isOpened():
     ret, frame = video.read()
     if not ret:
         break
-    modified_frame, landmarks = detectPose(frame, pose_video, display=True)
     
-
+    modified_frame, landmarks = detectPose(frame, pose_video, display=True)
+    face_names = frr.recognize_face(frame)
+    if face_names is not None:
+        print("Detected faces:", face_names)
+        
     time2 = time()
-    if (time2 - time1) > 3:  # Check every 5 seconds
+    
+    if (time2 - time1) > 2: 
+        # print("time")
         if landmarks is not None:
+            # print("landmarks")
             height, _, _ = frame.shape
             fall_detected, previous_avg_shoulder_height = detectFall(landmarks, height, previous_avg_shoulder_height)
-            if fall_detected:
-                print("Fall detected!")
+            if fall_detected:                 
+                print("Fall detected!")          
         time1 = time2
-
-    # Display fall detection status on the frame
-    # if fall_detected:
-    #     # Draw red background rectangle
-    #     cv2.rectangle(modified_frame, (0, 0), (300, 50), (0, 0, 255), -1)
-    #     # Write "Fall Detected!" text on the rectangle
-    #     cv2.putText(modified_frame, 'Fall Detected!', (10, 30), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 3)
-
-    # cv2.imshow('Fall Detection', modified_frame)
     k = cv2.waitKey(1) & 0xFF
     if k == 27:
         break
